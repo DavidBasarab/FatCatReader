@@ -10,9 +10,10 @@ namespace GoogleReaderAPITests
     public class ConfigurationTests
     {
         private const string TestUsername = "TEST_USER";
+        private const string TestPassword = "SOME_PASSWORD";
         private DataRepository _dataRepository;
         private Configuration _configuration;
-        internal MockRepository MockRepository { get; set; }
+        private MockRepository MockRepository { get; set; }
 
         [SetUp]
         public void SetUp()
@@ -20,18 +21,11 @@ namespace GoogleReaderAPITests
             MockRepository = new MockRepository();
         }
 
-        [Test]
-        public void WillSaveUsernameOnSet()
+        private void CreateConfiguration()
         {
-            MockDataRepository();
+            MockRepository.ReplayAll();
 
-            ExpectSaveUsername();
-            
-            CreateConfiguration();
-
-            _configuration.Username = TestUsername;
-            
-            MockRepository.VerifyAll();
+            _configuration = new Configuration(_dataRepository);
         }
 
         private void ExpectSaveUsername()
@@ -44,11 +38,18 @@ namespace GoogleReaderAPITests
             _dataRepository = MockRepository.StrictMock<DataRepository>();
         }
 
-        private void CreateConfiguration()
+        [Test]
+        public void WillGetPasswordOnGet()
         {
-            MockRepository.ReplayAll();
+            MockDataRepository();
 
-            _configuration = new Configuration(_dataRepository);
+            _dataRepository.Expect(v => v.GetPassword()).Return(TestPassword);
+
+            CreateConfiguration();
+
+            _configuration.Password.Should().Be(TestPassword);
+
+            MockRepository.VerifyAll();
         }
 
         [Test]
@@ -61,6 +62,34 @@ namespace GoogleReaderAPITests
             CreateConfiguration();
 
             _configuration.Username.Should().Be(TestUsername);
+
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void WillSavePasswordOnSet()
+        {
+            MockDataRepository();
+
+            _dataRepository.Expect(v => v.SavePassword(TestPassword));
+
+            CreateConfiguration();
+
+            _configuration.Password = TestPassword;
+
+            MockRepository.VerifyAll();
+        }
+
+        [Test]
+        public void WillSaveUsernameOnSet()
+        {
+            MockDataRepository();
+
+            ExpectSaveUsername();
+
+            CreateConfiguration();
+
+            _configuration.Username = TestUsername;
 
             MockRepository.VerifyAll();
         }

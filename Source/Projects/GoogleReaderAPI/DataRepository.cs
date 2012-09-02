@@ -5,5 +5,9 @@ namespace GoogleReaderAPI
         string GetUsername();
 
         void SaveUsername(string username);
+
+        string GetPassword();
+
+        void SavePassword(string password);
     }
 }
