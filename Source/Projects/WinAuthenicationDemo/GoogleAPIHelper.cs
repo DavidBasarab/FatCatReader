@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using Windows.Security.Authentication.Web;
 using Windows.Storage;
@@ -35,7 +36,7 @@ namespace WinAuthenicationDemo
 
             const string googleClientID = "77504385925.apps.googleusercontent.com";
             var googleURL = "https://accounts.google.com/o/oauth2/auth?client_id=" + Uri.EscapeDataString(googleClientID) + "&redirect_uri=" +
-                            Uri.EscapeDataString("urn:ietf:wg:oauth:2.0:oob") + "&response_type=code&scope=" + Uri.EscapeDataString("http://picasaweb.google.com/data");
+                            Uri.EscapeDataString("urn:ietf:wg:oauth:2.0:oob") + "&response_type=code&scope=" + Uri.EscapeDataString("http://picasaweb.google.com/data") + "&access_type=offline";
 
             var startUri = new Uri(googleURL);
             var endUri = new Uri("https://accounts.google.com/o/oauth2/approval?");
@@ -65,7 +66,8 @@ namespace WinAuthenicationDemo
 
         public async void GetToken()
         {
-            GetResponseText("http://www.google.com/reader/api/0/token");
+            //GetResponseText("http://www.google.com/reader/api/0/token");
+            GetResponseText("https://accounts.google.com/o/oauth2/token");
         }
 
         private void DebugPrint(string message, params object[] args)
@@ -77,10 +79,24 @@ namespace WinAuthenicationDemo
         {
             HttpClient = new HttpClient();
 
-            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            var request = new HttpRequestMessage(HttpMethod.Post, url);
 
             //request.Headers.Add("Authorization", string.Format("GoogleLogin auth={0}", RetrieveGoogleCode()));
-            request.Headers.Add("Authorization", string.Format("GoogleLogin auth= \"{0}\"", RetrieveGoogleCode()));
+            //request.Headers.Add("Authorization", string.Format("GoogleLogin auth= \"{0}\"", RetrieveGoogleCode()));
+            var paramters = new StringBuilder();
+
+            paramters.AppendFormat("code={0}&", RetrieveGoogleCode());
+            paramters.AppendFormat("client_id={0}&", "77504385925.apps.googleusercontent.com");
+            paramters.AppendFormat("client_secret={0}&", "StuSEv8ceP-EQi1WvWLXc6I8");
+            paramters.AppendFormat("redirect_uri={0}&", "urn:ietf:wg:oauth:2.0:oob");
+            //paramters.AppendFormat("access_type={0}&", "offline");
+            paramters.AppendFormat("grant_type={0}", "authorization_code");
+
+            var requestContent = new StringContent(paramters.ToString());
+
+            requestContent.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+
+            request.Content = requestContent;
 
             var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
 
