@@ -62,11 +62,12 @@ namespace WinAuthenicationDemo
                 DebugPrint("Unknown has errored.");
                 DebugPrint("Error information {0}", webAuthResults.ResponseStatus);
             }
+
+            GetToken();
         }
 
         public async void GetToken()
         {
-            //GetResponseText("http://www.google.com/reader/api/0/token");
             GetResponseText("https://accounts.google.com/o/oauth2/token");
         }
 
@@ -81,15 +82,12 @@ namespace WinAuthenicationDemo
 
             var request = new HttpRequestMessage(HttpMethod.Post, url);
 
-            //request.Headers.Add("Authorization", string.Format("GoogleLogin auth={0}", RetrieveGoogleCode()));
-            //request.Headers.Add("Authorization", string.Format("GoogleLogin auth= \"{0}\"", RetrieveGoogleCode()));
             var paramters = new StringBuilder();
 
             paramters.AppendFormat("code={0}&", RetrieveGoogleCode());
             paramters.AppendFormat("client_id={0}&", "77504385925.apps.googleusercontent.com");
             paramters.AppendFormat("client_secret={0}&", "StuSEv8ceP-EQi1WvWLXc6I8");
             paramters.AppendFormat("redirect_uri={0}&", "urn:ietf:wg:oauth:2.0:oob");
-            //paramters.AppendFormat("access_type={0}&", "offline");
             paramters.AppendFormat("grant_type={0}", "authorization_code");
 
             var requestContent = new StringContent(paramters.ToString());
@@ -119,9 +117,19 @@ namespace WinAuthenicationDemo
             return RoamingSettings.Values["GoogleCode"].ToString().Replace("Success code=", string.Empty);
         }
 
-        private void StoreGoogleCode(string responseData)
+        private string RetrieveToken()
         {
-            RoamingSettings.Values["GoogleCode"] = responseData;
+            return RoamingSettings.Values["Token"].ToString();
+        }
+
+        private void StoreGoogleCode(string googleCode)
+        {
+            RoamingSettings.Values["GoogleCode"] = googleCode;
+        }
+
+        private void StoreToken(string token)
+        {
+            RoamingSettings.Values["Token"] = token;
         }
     }
 }
