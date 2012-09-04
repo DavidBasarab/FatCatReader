@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spikes", "..\..\Projects\Sp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinAuthenicationDemo", "..\..\Projects\WinAuthenicationDemo\WinAuthenicationDemo.csproj", "{07BDFAE4-4715-48BE-876F-D0EDE74CF909}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSON", "..\..\Projects\JSON\JSON.csproj", "{28FEF020-1717-4AAF-87CC-2C41067ADFB3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WIntRTJSON", "..\..\Projects\JSON\WIntRTJSON.csproj", "{28FEF020-1717-4AAF-87CC-2C41067ADFB3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSONTests", "..\..\Projects\JSONTests\JSONTests.csproj", "{7411A447-F19C-46D1-8BD3-00E38CE0CA2F}"
 EndProject

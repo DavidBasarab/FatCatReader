@@ -24,7 +24,8 @@ namespace WinAuthenicationDemo
         {
             var roamingSettings = ApplicationData.Current.RoamingSettings;
 
-            roamingSettings.Values["GoogleCode"] = null;
+            roamingSettings.Values["AccessToken"] = null;
+            roamingSettings.Values["RefreshToken"] = null;
         }
 
         private void OnMainPageLoaded(object sender, RoutedEventArgs e)
@@ -32,20 +33,8 @@ namespace WinAuthenicationDemo
             GoogleAPI googleAPI = new GoogleAPIHelper();
             googleAPI.OnDebugMessage += DebugPrint;
 
-            var roamingSettings = ApplicationData.Current.RoamingSettings;
-
-            var googleCode = roamingSettings.Values["GoogleCode"];
-
-            if (googleCode == null || string.IsNullOrEmpty(googleCode.ToString()))
+            if (googleAPI.NeedToGetToken)
             {
-                DebugPrint("Could not find GoogleCode.  Going to get it now");
-
-                googleAPI.GetStatusCode();
-            }
-            else
-            {
-                DebugPrint("GoogleCode is {0}", googleCode);
-
                 googleAPI.GetToken();
             }
         }

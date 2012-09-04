@@ -133,9 +133,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\JSON\JSON.csproj">
+    <ProjectReference Include="..\JSON\WIntRTJSON.csproj">
       <Project>{28fef020-1717-4aaf-87cc-2c41067adfb3}</Project>
-      <Name>JSON</Name>
+      <Name>WIntRTJSON</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">

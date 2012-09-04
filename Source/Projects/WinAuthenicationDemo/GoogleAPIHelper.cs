@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
+using WinRTJSON;
 using Windows.Security.Authentication.Web;
 using Windows.Storage;
 
@@ -12,9 +15,8 @@ namespace WinAuthenicationDemo
 
     public interface GoogleAPI
     {
+        bool NeedToGetToken { get; }
         event DebugMessage OnDebugMessage;
-
-        void GetStatusCode();
 
         void GetToken();
     }
@@ -30,7 +32,58 @@ namespace WinAuthenicationDemo
 
         public event DebugMessage OnDebugMessage;
 
-        public async void GetStatusCode()
+        public async void GetToken()
+        {
+            await GetStatusCode();
+
+            HttpClient = new HttpClient();
+
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://accounts.google.com/o/oauth2/token");
+
+            var paramters = new StringBuilder();
+
+            paramters.AppendFormat("code={0}&", RetrieveGoogleCode());
+            paramters.AppendFormat("client_id={0}&", "77504385925.apps.googleusercontent.com");
+            paramters.AppendFormat("client_secret={0}&", "StuSEv8ceP-EQi1WvWLXc6I8");
+            paramters.AppendFormat("redirect_uri={0}&", "urn:ietf:wg:oauth:2.0:oob");
+            paramters.AppendFormat("grant_type={0}", "authorization_code");
+
+            var requestContent = new StringContent(paramters.ToString());
+
+            requestContent.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+
+            request.Content = requestContent;
+
+            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+
+            DebugPrint("StatusCode: {0} - {1}", response.StatusCode, response.ReasonPhrase);
+
+            var responseBody = new StringBuilder();
+
+            using (var responseStream = await response.Content.ReadAsStreamAsync())
+            {
+                var streamReader = new StreamReader(responseStream);
+
+                responseBody.Append(streamReader.ReadToEnd());
+            }
+
+            DebugPrint("Response: {0}", responseBody);
+
+            var jsonResults = JSON.JsonDecode(responseBody.ToString()) as IDictionary<string, object>;
+
+            if (jsonResults != null)
+            {
+                StoreSetting("AccessToken", jsonResults["access_token"].ToString());
+                StoreSetting("RefreshToken", jsonResults["refresh_token"].ToString());
+            }
+        }
+
+        public bool NeedToGetToken
+        {
+            get { return RoamingSettings == null || KeyValueFound("AccessToken") || KeyValueFound("RefreshToken"); }
+        }
+
+        public async Task<int> GetStatusCode()
         {
             DebugPrint("OnLaunchClick started ====> ");
 
@@ -63,12 +116,7 @@ namespace WinAuthenicationDemo
                 DebugPrint("Error information {0}", webAuthResults.ResponseStatus);
             }
 
-            GetToken();
-        }
-
-        public async void GetToken()
-        {
-            GetResponseText("https://accounts.google.com/o/oauth2/token");
+            return 1;
         }
 
         private void DebugPrint(string message, params object[] args)
@@ -76,40 +124,9 @@ namespace WinAuthenicationDemo
             if (OnDebugMessage != null) OnDebugMessage(message, args);
         }
 
-        private async void GetResponseText(string url)
+        private bool KeyValueFound(string key)
         {
-            HttpClient = new HttpClient();
-
-            var request = new HttpRequestMessage(HttpMethod.Post, url);
-
-            var paramters = new StringBuilder();
-
-            paramters.AppendFormat("code={0}&", RetrieveGoogleCode());
-            paramters.AppendFormat("client_id={0}&", "77504385925.apps.googleusercontent.com");
-            paramters.AppendFormat("client_secret={0}&", "StuSEv8ceP-EQi1WvWLXc6I8");
-            paramters.AppendFormat("redirect_uri={0}&", "urn:ietf:wg:oauth:2.0:oob");
-            paramters.AppendFormat("grant_type={0}", "authorization_code");
-
-            var requestContent = new StringContent(paramters.ToString());
-
-            requestContent.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
-
-            request.Content = requestContent;
-
-            var response = await HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-
-            DebugPrint("StatusCode: {0} - {1}", response.StatusCode, response.ReasonPhrase);
-
-            var responseBody = new StringBuilder();
-
-            using (var responseStream = await response.Content.ReadAsStreamAsync())
-            {
-                var streamReader = new StreamReader(responseStream);
-
-                responseBody.Append(streamReader.ReadToEnd());
-            }
-
-            DebugPrint("Response: {0}", responseBody);
+            return RoamingSettings.Values[key] == null || string.IsNullOrEmpty(RoamingSettings.Values[key].ToString());
         }
 
         private string RetrieveGoogleCode()
@@ -127,9 +144,11 @@ namespace WinAuthenicationDemo
             RoamingSettings.Values["GoogleCode"] = googleCode;
         }
 
-        private void StoreToken(string token)
+        private void StoreSetting(string key, string token)
         {
-            RoamingSettings.Values["Token"] = token;
+            RoamingSettings.Values[key] = token;
         }
+
+        private void StoreToken(string token) {}
     }
 }
