@@ -1,4 +1,5 @@
 ﻿using System;
+using GoogleAPI;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -30,13 +31,10 @@ namespace WinAuthenicationDemo
 
         private void OnMainPageLoaded(object sender, RoutedEventArgs e)
         {
-            GoogleAPI googleAPI = new GoogleAPIHelper();
+            GoogleReaderAPI googleAPI = new GoogleAPIHelper();
             googleAPI.OnDebugMessage += DebugPrint;
 
-            if (googleAPI.NeedToGetToken)
-            {
-                googleAPI.GetToken();
-            }
+            if (googleAPI.NeedToGetToken) googleAPI.GetToken();
         }
 
         private void DebugPrint(string message, params object[] args)

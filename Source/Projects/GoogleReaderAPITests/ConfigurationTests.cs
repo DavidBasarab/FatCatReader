@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using GoogleReaderAPI;
+using GoogleAPI;
 using NUnit.Framework;
 using Rhino.Mocks;
 

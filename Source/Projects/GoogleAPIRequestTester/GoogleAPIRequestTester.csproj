@@ -4,15 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{07BDFAE4-4715-48BE-876F-D0EDE74CF909}</ProjectGuid>
+    <ProjectGuid>{CFCE653A-48DB-40E0-84DE-00267D1DA92F}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WinAuthenicationDemo</RootNamespace>
-    <AssemblyName>WinAuthenicationDemo</AssemblyName>
+    <RootNamespace>GoogleAPIRequestTester</RootNamespace>
+    <AssemblyName>GoogleAPIRequestTester</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateKeyFile>WinAuthenicationDemo_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>GoogleAPIRequestTester_TemporaryKey.pfx</PackageCertificateKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -102,7 +102,7 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <ProjectReference Include="..\GoogleReaderAPI\GoogleReaderAPI_WinRT.csproj">
-      <Project>{370837C5-9D4D-485B-B1EC-DEF1ADDF69FC}</Project>
+      <Project>{370837c5-9d4d-485b-b1ec-def1addf69fc}</Project>
       <Name>GoogleReaderAPI_WinRT</Name>
     </ProjectReference>
     <ProjectReference Include="..\JSON\WIntRTJSON.csproj">
@@ -114,11 +114,12 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainPage.xaml.cs">
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Models\ReaderMethod.cs" />
+    <Compile Include="ViewLocator.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ProcessLogin.xaml.cs">
-      <DependentUpon>ProcessLogin.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -126,7 +127,8 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="WinAuthenicationDemo_TemporaryKey.pfx" />
+    <None Include="GoogleAPIRequestTester_TemporaryKey.pfx" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Logo.png" />
@@ -143,15 +145,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="MainPage.xaml">
+    <Page Include="Views\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="ProcessLogin.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="GalaSoft.MvvmLight.Extras.Win8">
+      <HintPath>..\..\Solution\GoogleReaderLibrary\packages\MvvmLightLibs.4.1.23.0\lib\winrt45\GalaSoft.MvvmLight.Extras.Win8.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Win8">
+      <HintPath>..\..\Solution\GoogleReaderLibrary\packages\MvvmLightLibs.4.1.23.0\lib\winrt45\GalaSoft.MvvmLight.Win8.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation">
+      <HintPath>..\..\Solution\GoogleReaderLibrary\packages\MvvmLightLibs.4.1.23.0\lib\winrt45\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
   </PropertyGroup>

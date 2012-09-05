@@ -9,7 +9,7 @@
     <ProjectGuid>{370837C5-9D4D-485B-B1EC-DEF1ADDF69FC}</ProjectGuid>
     <OutputType>winmdobj</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GoogleReaderAPI_WinRT</RootNamespace>
+    <RootNamespace>GoogleAPI</RootNamespace>
     <AssemblyName>GoogleReaderAPI_WinRT</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
@@ -100,10 +100,16 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <ProjectReference Include="..\JSON\WIntRTJSON.csproj">
+      <Project>{28fef020-1717-4aaf-87cc-2c41067adfb3}</Project>
+      <Name>WIntRTJSON</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
     <Compile Include="DataRepository.cs" />
+    <Compile Include="GoogleAPI.cs" />
+    <Compile Include="GoogleAPIHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">

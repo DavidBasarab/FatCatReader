@@ -1,0 +1,63 @@
+﻿<Page
+    x:Class="GoogleAPIRequestTester.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GoogleAPIRequestTester"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <ResourceDictionary>
+            <local:ViewLocator x:Key="ViewLocator" />
+        </ResourceDictionary>
+    </Page.Resources>
+    <Page.DataContext>
+        <Binding Source="{StaticResource ViewLocator}" Path="MainViewModel" />
+    </Page.DataContext>
+    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="75" />
+            <RowDefinition />
+            <RowDefinition Height="192" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid Margin="5" Grid.Row="0" Grid.ColumnSpan="3">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Request Method" Margin="0 0 15 0" FontSize="16" FontStyle="Italic" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                <ComboBox VerticalAlignment="Center" HorizontalAlignment="Center" ItemsSource="{Binding ReaderMethods}" SelectedItem="{Binding SelectedMethod}" DisplayMemberPath="Name" Margin="0,17,0,16" Width="255" >
+                </ComboBox>
+                <Button Content="Run" Margin="10,0,0,0" Command="{Binding RunCommand}" />
+                <Button Content="Clear Data" Margin="10,0,0,0" Command="{Binding ClearData}" />
+            </StackPanel>
+        </Grid>
+        <Grid x:Name="grdRequestFields" Grid.Row="1" Grid.Column="0"></Grid>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock Text="Request" FontSize="20" />
+            <TextBox x:Name="txtRequest" Grid.Row="1" Margin="5" IsReadOnly="True" Text="{Binding RequestText, Mode=TwoWay}" AcceptsReturn="True" />
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="2" Grid.RowSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock Text="Response" FontSize="20" Grid.Row="0" />
+            <TextBox x:Name="txtResponse" Margin="5" IsReadOnly="True" Grid.Row="1" Text="{Binding ResponseText, Mode=TwoWay}" AcceptsReturn="True" />
+        </Grid>
+        <Grid Margin="5" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock Text="Debug" FontSize="20" Grid.Row="0" FontFamily="Courier New" />
+            <TextBox x:Name="txtDebug" Margin="5" IsReadOnly="True" Grid.Row="1" FontSize="9" FontFamily="Courier New" Text="{Binding DebugText, Mode=TwoWay}" AcceptsReturn="True" />
+        </Grid>
+    </Grid>
+</Page>

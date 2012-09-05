@@ -9,32 +9,28 @@ using WinRTJSON;
 using Windows.Security.Authentication.Web;
 using Windows.Storage;
 
-namespace WinAuthenicationDemo
+namespace GoogleAPI
 {
-    public delegate void DebugMessage(string message, params object[] args);
+    public delegate void Message(string message, params object[] args);
 
-    public interface GoogleAPI
+    public sealed class GoogleAPIHelper : GoogleReaderAPI
     {
-        bool NeedToGetToken { get; }
-        event DebugMessage OnDebugMessage;
-
-        void GetToken();
-    }
-
-    public class GoogleAPIHelper : GoogleAPI
-    {
-        public HttpClient HttpClient { get; set; }
+        private HttpClient HttpClient { get; set; }
 
         public ApplicationDataContainer RoamingSettings
         {
             get { return ApplicationData.Current.RoamingSettings; }
         }
 
-        public event DebugMessage OnDebugMessage;
+        public event Message OnDebugMessage;
+        public event Message OnResponse;
+        public event Message OnRequest;
 
         public async void GetToken()
         {
             await GetStatusCode();
+
+            DebugPrint("Geting Token");
 
             HttpClient = new HttpClient();
 
@@ -67,7 +63,7 @@ namespace WinAuthenicationDemo
                 responseBody.Append(streamReader.ReadToEnd());
             }
 
-            DebugPrint("Response: {0}", responseBody);
+            DebugPrint(responseBody.ToString());
 
             var jsonResults = JSON.JsonDecode(responseBody.ToString()) as IDictionary<string, object>;
 
@@ -83,9 +79,14 @@ namespace WinAuthenicationDemo
             get { return RoamingSettings == null || KeyValueFound("AccessToken") || KeyValueFound("RefreshToken"); }
         }
 
-        public async Task<int> GetStatusCode()
+        private void DebugPrint(string message, params object[] args)
         {
-            DebugPrint("OnLaunchClick started ====> ");
+            if (OnDebugMessage != null) OnDebugMessage(message, args);
+        }
+
+        private async Task<int> GetStatusCode()
+        {
+            DebugPrint("GetStatusCode started ====> ");
 
             const string googleClientID = "77504385925.apps.googleusercontent.com";
             var googleURL = "https://accounts.google.com/o/oauth2/auth?client_id=" + Uri.EscapeDataString(googleClientID) + "&redirect_uri=" +
@@ -117,11 +118,6 @@ namespace WinAuthenicationDemo
             }
 
             return 1;
-        }
-
-        private void DebugPrint(string message, params object[] args)
-        {
-            if (OnDebugMessage != null) OnDebugMessage(message, args);
         }
 
         private bool KeyValueFound(string key)

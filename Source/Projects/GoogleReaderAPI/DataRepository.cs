@@ -1,4 +1,4 @@
-namespace GoogleReaderAPI
+namespace GoogleAPI
 {
     public interface DataRepository
     {
